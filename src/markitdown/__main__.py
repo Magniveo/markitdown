@@ -68,13 +68,17 @@ def main():
         result = markitdown.convert(args.filename)
         _handle_output(args, result)
 
-
 def _handle_output(args, result: DocumentConverterResult):
     """Handle output to stdout or file"""
     if args.output:
         with open(args.output, "w", encoding="utf-8") as f:
             f.write(result.text_content)
     else:
+        try:
+            sys.stdout.reconfigure(encoding='utf-8')
+        except AttributeError:
+            import io
+            sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
         print(result.text_content)
 
 
